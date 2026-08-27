@@ -1,0 +1,18 @@
+{
+  "note": "8 型 SkylyaType 的对外友好名 + IP 图片路径。code 对应 skylia-type-copy.ts 的权威文案(traits/strengths/description/bestMatches)。对外网站主打 publicName(友好版),正文用 copy.ts 的正向字段。图片在 /ip/1024/<code>.webp(常用),小尺寸变体在 /ip/320s、/ip/512s。",
+  "axes": [
+    { "id": "position", "label": "谁更主动", "poles": ["主动推进 Lead", "顺着相处 Companion"], "letters": ["L", "C"] },
+    { "id": "emotion", "label": "亲近时的反应", "poles": ["想靠近 Anchor", "会先退一步 Buffer"], "letters": ["A", "B"] },
+    { "id": "rhythm", "label": "相处节奏", "poles": ["喜欢稳定 Stable", "喜欢新鲜 Dynamic"], "letters": ["S", "D"] }
+  ],
+  "types": [
+    { "code": "CAD", "publicName": "探索表达者", "img": "/ip/1024/cad.webp" },
+    { "code": "CAS", "publicName": "温柔连接者", "img": "/ip/1024/cas.webp" },
+    { "code": "CBD", "publicName": "冷静探险家", "img": "/ip/1024/cbd.webp" },
+    { "code": "CBS", "publicName": "务实行动派", "img": "/ip/1024/cbs.webp" },
+    { "code": "LAD", "publicName": "热忱行动家", "img": "/ip/1024/lad.webp" },
+    { "code": "LAS", "publicName": "从容生活家", "img": "/ip/1024/las.webp" },
+    { "code": "LBD", "publicName": "好奇旅行者", "img": "/ip/1024/lbd.webp" },
+    { "code": "LBS", "publicName": "专注思考者", "img": "/ip/1024/lbs.webp" }
+  ]
+}

@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Skylya Type · 看见你如何爱</title>
+    <meta
+      name="description"
+      content="12 道关系情境，读出你在亲密关系里的位置、情绪与节奏。看见你如何爱，找到真正对的人。"
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://skylya.com/" />
+    <meta property="og:title" content="SkylyaType · 亲密关系人格测试" />
+    <meta
+      property="og:description"
+      content="12 题情境滑杆，读懂你在亲密关系里的位置、情绪角色与节奏偏好，得出属于你的 SkylyaType。"
+    />
+    <!-- og:image MUST be an absolute https URL — WeChat/Weibo/QQ/X crawlers do
+         not resolve site-relative paths, so a relative /og.jpg renders a
+         no-image share card on the primary acquisition channel (craft-bar §8). -->
+    <meta property="og:image" content="https://skylya.com/og.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <!-- theme-color = the page's warm mineral-plaster ground:
+         iPhone Safari tints its toolbar/status chrome with this — the old
+         obsidian #14110d painted a dark band over the light page. -->
+    <meta name="theme-color" content="#f7f5f2" />
+    <!-- Fonts are self-hosted subset woff2 (@font-face in the bundled CSS) —
+         no render-blocking third-party stylesheet, no Google Fonts reachability
+         risk for the mainland audience. Preload the two first-paint faces
+         (headings render Noto Serif SC 700 — 900 is no longer above the fold). -->
+    <link rel="preload" href="/fonts/noto-sans-sc-400.woff2" as="font" type="font/woff2" crossorigin />
+    <!-- Hero LCP figures: high-priority preload so the two above-the-fold
+         portraits win the first-screen bandwidth over the folded gallery tiles
+         (which are loading=lazy) on a mainland 4G first paint. -->
+    <link rel="preload" href="/ip-next/lad-m.jpg" as="image" type="image/jpeg" fetchpriority="high" />
+    <link rel="preload" href="/ip-next/cas-f.jpg" as="image" type="image/jpeg" fetchpriority="high" />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>

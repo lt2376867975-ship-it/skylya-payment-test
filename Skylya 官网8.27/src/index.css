@@ -1,0 +1,1814 @@
+@import "tailwindcss";
+
+/* ============================================================================
+   Self-hosted fonts (subset woff2, /public/fonts). Abril/Seymour retired in the
+   v2 restyle (kept on disk, unused). CJK files are subset to the site's copy.
+   ========================================================================== */
+@font-face {
+  font-family: "Baloo Thambi 2";
+  font-style: normal;
+  font-weight: 400 800;
+  font-display: swap;
+  src: url("/fonts/baloo-thambi-2-latin-variable.woff2") format("woff2-variations");
+}
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/inter-400.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("/fonts/inter-500.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("/fonts/inter-600.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Noto Sans SC";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/noto-sans-sc-400.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Noto Sans SC";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("/fonts/noto-sans-sc-500.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Noto Sans SC";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("/fonts/noto-sans-sc-700.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Noto Serif SC";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("/fonts/noto-serif-sc-700.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Noto Serif SC";
+  font-style: normal;
+  font-weight: 900;
+  font-display: swap;
+  src: url("/fonts/noto-serif-sc-900.woff2") format("woff2");
+}
+
+/* ============================================================================
+   Skylya — design-system layer v2 · 现代简约 / Modern Minimalist (2026-07-13)
+   Near-white ground, near-black type, ONE brick-red accent, generous space,
+   zero decoration. Tokens live in @theme; composed primitives are unlayered
+   (they intentionally beat utilities). Legacy token NAMES are kept but repointed
+   to light values so the components' existing utilities flip to light safely;
+   the component sweep then removes the now-redundant decorative markup.
+   ⚠ An unlayered primitive must NEVER set a longhand a Tailwind utility sets via
+   shorthand (position, white-space, overflow…) — it silently disarms the
+   utility at every consumer. Primitives stay on font/material/motion props.
+   ========================================================================== */
+
+@theme {
+  /* ---- Modern-minimalist palette (the whole budget) --------------------- */
+  --color-bg:        #faf8f5;   /* near-white ground (warm a touch)          */
+  --color-surface:   #ffffff;   /* cards / panels / overlays                 */
+  --color-surface-2: #f2f1eb;   /* IP well / recessed / product-shot floor   */
+  --color-text:      #16150f;   /* near-black — headings + body              */
+  --color-text-2:    #6b6862;   /* secondary                                 */
+  --color-text-3:    #a6a29a;   /* tertiary / eyebrow / placeholder          */
+  --color-line:      #e7e5df;   /* the only "edge": 1px hairline             */
+  --color-line-2:    #d8d5cd;   /* slightly stronger edge (hover/active)     */
+  --color-accent:    #c1502f;   /* brick-red — the ONE accent, mostly the CTA */
+  --color-accent-ink:#a83f22;   /* accent pressed / on-light text-safe        */
+
+  /* ---- Legacy names, repointed to light (components still use these) ----- */
+  --color-paper: var(--color-bg);
+  --color-obsidian: var(--color-bg);       /* was dark ground → now ground   */
+  --color-graphite: var(--color-surface);
+  --color-graphite-2: var(--color-surface-2);
+  --color-cream: var(--color-text);        /* was light text → near-black    */
+  --color-ink: var(--color-text);
+  --color-espresso: var(--color-text);     /* dark text usages               */
+  --color-espresso-2: #201d17;
+  --color-espresso-3: var(--color-surface-2);
+  --color-steel: var(--color-text-2);
+  --color-brown: var(--color-text-2);
+  --color-muted: var(--color-text-3);
+  --color-gold: #b3aa9c;                    /* decorative "gold" → quiet gray */
+  --color-terracotta: var(--color-accent);
+  --color-terracotta-2: var(--color-accent);
+  --color-terracotta-bright: var(--color-accent);
+  --color-hair: rgba(22, 21, 15, 0.08);
+
+  /* ---- Type families (≤3: Inter + Noto Sans SC body, Noto Serif SC display) */
+  --font-display: "Noto Serif SC", "Songti SC", "STSong", serif; /* hero/H2   */
+  --font-display-cjk: "Noto Serif SC", "Songti SC", "STSong", serif;
+  --font-type: "Inter", system-ui, sans-serif;         /* 3-letter codes      */
+  --font-sans: "Inter", "Noto Sans SC", sans-serif;    /* UI + body (Latin→Inter, CJK→Noto Sans) */
+  --font-num: "Inter", sans-serif;
+  --font-logo: "Baloo Thambi 2", "Inter", system-ui, sans-serif;
+
+  /* ---- Modular type scale (ratio ~1.25, 8pt-aligned) -------------------- */
+  --text-eyebrow: 0.75rem;
+  --text-eyebrow--line-height: 1.4;
+  --text-eyebrow--letter-spacing: 0.18em;
+
+  --text-caption: 0.8125rem;
+  --text-caption--line-height: 1.5;
+
+  --text-body: 1rem;
+  --text-body--line-height: 1.7;
+
+  --text-body-lg: 1.1875rem;
+  --text-body-lg--line-height: 1.65;
+
+  --text-h3: 1.5rem;
+  --text-h3--line-height: 1.3;
+
+  --text-h2: clamp(1.875rem, 1.2rem + 2.4vw, 2.75rem);
+  --text-h2--line-height: 1.2;
+  --text-h2--letter-spacing: -0.02em;
+
+  --text-h1: clamp(2.25rem, 1.3rem + 3.6vw, 3.5rem);
+  --text-h1--line-height: 1.14;
+  --text-h1--letter-spacing: -0.025em;
+
+  --text-display: clamp(2.75rem, 1.1rem + 6.4vw, 5rem);
+  --text-display--line-height: 1.06;
+  --text-display--letter-spacing: -0.035em;
+
+  /* ---- Motion curves ---------------------------------------------------- */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+  --ease-in-out-quart: cubic-bezier(0.76, 0, 0.24, 1);
+  /* One house easing for app-shell motion (tabs / nav / detail): calm settle. */
+  --ease-luxe: cubic-bezier(0.22, 1, 0.36, 1);
+
+  /* ---- Neutral shadow tiers (light ground; extremely restrained) -------- */
+  --shadow-soft: 0 1px 2px rgba(22, 21, 15, 0.04), 0 4px 14px rgba(22, 21, 15, 0.05);
+  --shadow-card: 0 1px 2px rgba(22, 21, 15, 0.05), 0 10px 30px rgba(22, 21, 15, 0.07);
+  --shadow-card-hover: 0 2px 6px rgba(22, 21, 15, 0.06), 0 18px 44px rgba(22, 21, 15, 0.10);
+  --shadow-overlay: 0 1px 2px rgba(22, 21, 15, 0.06), 0 24px 60px rgba(22, 21, 15, 0.16);
+  /* Legacy dark-shadow aliases → same neutral light tiers. */
+  --shadow-card-dark: var(--shadow-card);
+  --shadow-card-dark-hover: var(--shadow-card-hover);
+}
+
+/* ============================================================================
+   Base globals — flat near-white. No grain, no vignette, no gradient field:
+   in modern-minimalist the empty ground IS the material.
+   ========================================================================== */
+html, body, #root {
+  margin: 0;
+  min-height: 100svh;
+}
+
+html {
+  scroll-behavior: auto;
+  scroll-padding-top: 5rem;
+  scrollbar-color: var(--color-line-2) transparent;
+}
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-sans);
+  position: relative;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+#root {
+  position: relative;
+  z-index: 1;
+}
+
+/* All site imagery is presentational: kill iOS long-press drag / save-sheet so
+   figures read as built-in UI, never a pasted-on photo (user-caught bug). */
+img {
+  -webkit-user-drag: none;
+  user-drag: none;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* Tap controls (D13): `manipulation` disarms iOS double-tap smart-zoom on rapid
+   re-taps while keeping pinch-zoom. Element-level so control-specific values
+   still win on specificity. */
+a,
+button {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+::selection {
+  background: #e7ded6;
+  color: var(--color-text);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+/* Legacy hook kept as a no-op alias (dark-surface ring switch no longer needed). */
+.focus-cream:focus-visible {
+  outline-color: var(--color-accent);
+}
+
+/* Slim neutral scrollbar (webkit). */
+::-webkit-scrollbar {
+  width: 11px;
+  height: 11px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-line-2);
+  border-radius: 999px;
+  border: 3px solid var(--color-bg);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-text-3);
+}
+
+/* ============================================================================
+   Typography primitives (unlayered → beat text-* utilities so one class gives a
+   full editorial CJK display treatment). NO text-wrap here (it's a white-space
+   longhand and would disarm `truncate`).
+   ========================================================================== */
+.font-cjk-display {
+  font-family: var(--font-display-cjk);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.12;
+}
+.font-cjk-display-xl {
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  line-height: 1.04;
+}
+.tnum {
+  font-family: var(--font-num);
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
+}
+/* 3-letter codes (LAS…) + pole letters — clean heavy Inter, reads as a precise
+   spec mark. Unlayered so it overrides the Tailwind `font-type` utility. */
+.font-type {
+  font-family: var(--font-num);
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  font-feature-settings: "tnum";
+}
+
+/* ============================================================================
+   Dividers — the decorative brass/seam/tick family is retired. Every legacy
+   divider class now renders as ONE quiet 1px neutral hairline (or nothing), so
+   existing markup reads clean-minimal instantly; the sweep removes the redundant
+   ones from markup where a plain <hr> or pure whitespace is better.
+   ========================================================================== */
+.rule-brass,
+.rule-brass--capped,
+.rule-double,
+.seam,
+.hairline {
+  border: 0;
+  height: 1px;
+  background: var(--color-line);
+}
+.rule-brass--capped::before,
+.rule-brass--capped::after,
+.rule-brass--center::after,
+.seam::before {
+  content: none !important;
+}
+.hairline-soft {
+  border: 0;
+  height: 1px;
+  background: var(--color-line);
+}
+/* Section nameplate mark — a small neutral tick (quiet, not brass). */
+.tick {
+  display: inline-block;
+  width: 2px;
+  height: 10px;
+  background: var(--color-line-2);
+}
+
+/* ============================================================================
+   Image well — light "product-shot" floor. IP sits on a very-light-gray plate;
+   no spotlight, no warm wash, no tonal filter (direction §3).
+   ========================================================================== */
+.card-well {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  border-radius: var(--well-radius, 0.75rem);
+  background: var(--color-surface-2);
+  box-shadow: inset 0 0 0 1px var(--color-line);
+}
+.card-well::before,
+.card-well::after {
+  content: none;
+}
+/* Set-unifying desaturation is baked into the /ip/320s|512s|1024s assets now —
+   no CSS filter on the 8 scroll-path images (iOS: per-frame offscreen render
+   of filtered images was the main scroll-jank source). */
+
+/* Hero display — the two figures stand in the same light product-shot plate.
+   No cabinet, no gold up-light: whitespace + composition carry it. */
+.hero-cabinet {
+  position: absolute;
+  border-radius: 1rem;
+  background: var(--color-surface-2);
+  box-shadow: inset 0 0 0 1px var(--color-line);
+}
+.hero-cabinet::before {
+  content: none;
+}
+/* .hero-ip: no filter. The grounding shadow is a static gradient ellipse
+   rendered inside Hero.jsx — CSS drop-shadow on the idle-animated figures
+   forced continuous offscreen re-rasterization on iOS. */
+
+/* Elevated overlay panel (type detail / TestIntro) — clean white sheet, one
+   hairline, a soft neutral lift over a dimmed scrim. */
+.modal-panel {
+  border: 1px solid var(--color-line);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-overlay);
+  transform-origin: center;
+  animation: modal-panel-enter 360ms var(--ease-out-expo) both;
+}
+
+@keyframes modal-panel-enter {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(.975);
+    filter: blur(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+/* ============================================================================
+   Light editorial band (legacy .surface-espresso / --deep / .surface-obsidian):
+   in v2 these are simply light. Any consumer keeps its layout; the ground is now
+   near-white with an optional hairline top edge added at the consumer.
+   ========================================================================== */
+.surface-espresso,
+.surface-espresso--deep,
+.surface-obsidian {
+  position: relative;
+  isolation: isolate;
+  color: var(--color-text);
+  background: var(--color-bg);
+}
+.surface-espresso::before,
+.surface-espresso::after,
+.surface-espresso--deep::before,
+.surface-espresso--deep::after,
+.surface-obsidian::before,
+.seat-bottom {
+  content: none !important;
+  display: none !important;
+}
+
+/* Plaque / panel on light (legacy .glass, .glass-light) — solid white card,
+   one hairline, a soft neutral lift. Zero backdrop-filter (mobile jank rule). */
+.glass,
+.glass-light {
+  background: var(--color-surface);
+  border: 1px solid var(--color-line);
+  box-shadow: var(--shadow-soft);
+}
+
+/* Precise "spec" micro-label — tabular tech type, quiet neutral. */
+.spec-label {
+  font-family: var(--font-num);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-size: 0.6875rem;
+  color: var(--color-text-2);
+}
+
+/* ============================================================================
+   Button system — one height/radius/pad scale; minimalist states.
+   ========================================================================== */
+.btn {
+  --btn-h: 3rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  min-height: var(--btn-h);
+  padding-inline: 1.6rem;
+  border-radius: 0.75rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition:
+    transform 240ms var(--ease-out-expo),
+    background-color 240ms var(--ease-out-expo),
+    box-shadow 240ms var(--ease-out-expo),
+    border-color 240ms var(--ease-out-expo),
+    color 200ms ease;
+}
+.btn:active {
+  transform: translateY(0) scale(0.985);
+}
+.btn-lg {
+  --btn-h: 3.5rem;
+  padding-inline: 2.1rem;
+  font-size: 1.0625rem;
+}
+.btn-sm {
+  --btn-h: 2.75rem;
+  padding-inline: 1.25rem;
+  font-size: 0.875rem;
+}
+
+/* Primary conversion CTA — the ONE accent: flat brick-red, white text. */
+.btn-cta {
+  background: var(--color-accent);
+  color: #fff;
+  box-shadow: var(--shadow-soft);
+}
+.btn-cta::before {
+  content: none;
+}
+.btn-cta:active {
+  transform: translateY(0) scale(0.985);
+  box-shadow: var(--shadow-soft);
+}
+
+/* Dark solid secondary — near-black on white (clean minimal, no accent). */
+.btn-espresso {
+  background: var(--color-text);
+  color: var(--color-bg);
+  box-shadow: var(--shadow-soft);
+}
+
+/* Ghost — quiet outline secondary. */
+.btn-ghost,
+.btn-ghost-cream {
+  background: transparent;
+  color: var(--color-text);
+  border-color: var(--color-line-2);
+}
+
+/* Button hovers are mouse-only: iOS first-tap lands (and sticks) :hover, so a
+   touched button otherwise stays "lifted" after the finger leaves. Touch gets
+   the :active press states above only. */
+@media (hover: hover) {
+  .btn-cta:hover {
+    background: var(--color-accent-ink);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-card);
+  }
+  .btn-espresso:hover {
+    background: #2c2a22;
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-card);
+  }
+  .btn-ghost:hover,
+  .btn-ghost-cream:hover {
+    border-color: var(--color-text);
+    transform: translateY(-2px);
+  }
+}
+
+/* ============================================================================
+   Type-gallery card — clean white card, hairline, restrained lift.
+   ========================================================================== */
+.type-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  border-radius: 0.75rem;
+  background: var(--color-surface);
+  border: 1px solid var(--color-line);
+  box-shadow: var(--shadow-soft);
+  overflow: hidden;
+  transition:
+    transform 420ms var(--ease-out-expo),
+    box-shadow 420ms var(--ease-out-expo),
+    border-color 420ms var(--ease-out-expo);
+}
+/* Keyboard affordance stays universal (a11y). */
+.type-card:focus-visible {
+  box-shadow: var(--shadow-card);
+  border-color: var(--color-line-2);
+}
+/* Pointer-hover set lives behind (hover: hover): iOS sticky tap-hover would
+   otherwise fire the full lift/zoom on the modal-open frame. */
+@media (hover: hover) {
+  .type-card:hover {
+    box-shadow: var(--shadow-card);
+    border-color: var(--color-line-2);
+  }
+  .type-card:hover .type-card__img {
+    transform: scale(1.04);
+  }
+  .type-card:hover .type-card__body {
+    transform: translateY(-2px);
+  }
+  .type-card:hover .type-card__sweep {
+    transform: scaleX(1);
+  }
+  .type-card:hover .type-card__action {
+    color: var(--color-accent);
+  }
+  .type-card:hover .type-card__arrow {
+    transform: translateX(4px);
+  }
+}
+.type-card:active {
+  transform: scale(0.99);
+  box-shadow: var(--shadow-soft);
+}
+.type-card__img {
+  transition: transform 700ms var(--ease-out-expo);
+}
+.type-card:focus-visible .type-card__img {
+  transform: scale(1.04);
+}
+.type-card__body {
+  transition: transform 460ms var(--ease-out-expo);
+}
+.type-card:focus-visible .type-card__body {
+  transform: translateY(-2px);
+}
+/* Affordance underline — a quiet neutral sweep, not an accent (8 cards must not
+   each carry the accent). */
+.type-card__sweep {
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 500ms var(--ease-out-expo);
+}
+.type-card:focus-visible .type-card__sweep {
+  transform: scaleX(1);
+}
+/* Action row — rest neutral; on hover it becomes the card's single accent. */
+.type-card__action {
+  color: var(--color-text-2);
+  transition: color 200ms ease;
+}
+.type-card:focus-visible .type-card__action {
+  color: var(--color-accent);
+}
+.type-card__arrow {
+  transition: transform 320ms var(--ease-out-expo);
+}
+.type-card:focus-visible .type-card__arrow {
+  transform: translateX(4px);
+}
+
+/* ============================================================================
+   Instrument gauge — light panel, recessed groove, brick-red tension fill from
+   the midpoint, clean white knob. Interaction lives in HowItWorks.jsx; this file
+   supplies the static material + transforms only.
+   ========================================================================== */
+.gauge-panel {
+  border-radius: 0.75rem;
+  border: 1px solid var(--color-line);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-soft);
+  padding: 20px;
+}
+@media (min-width: 1024px) {
+  .gauge-panel { padding: 28px; }
+}
+
+.gauge-rail {
+  position: relative;
+  height: 44px;
+  touch-action: pan-y;
+  cursor: pointer;
+  -webkit-user-select: none;
+  user-select: none;
+}
+.gauge-rail.is-dragging { cursor: grabbing; }
+
+.gauge-groove {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 6px;
+  transform: translateY(-50%);
+  border-radius: 999px;
+  background: var(--color-surface-2);
+  box-shadow: inset 0 1px 2px rgba(22, 21, 15, 0.10), inset 0 0 0 1px var(--color-line);
+}
+
+/* Tension fill — brick-red bar growing from the midpoint toward the knob. */
+.gauge-fill {
+  position: absolute;
+  top: 1px;
+  left: 50%;
+  height: 4px;
+  width: 50%;
+  border-radius: 999px;
+  transform: scaleX(var(--fill, 0));
+  transform-origin: left center;
+  background: var(--color-accent);
+}
+.gauge-fill.is-left {
+  left: 0;
+  transform-origin: right center;
+}
+
+/* Tick scale retired (delete-list: 刻度/tick/菱点) — a clean minimal rail is
+   groove + accent fill + single knob. The JSX still renders the layer; hidden
+   here so the control reads 「少即是多」. */
+.gauge-ticks {
+  display: none;
+}
+.gauge-ticks-legacy {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: calc(50% + 7px);
+  height: 8px;
+  pointer-events: none;
+}
+.gauge-tick {
+  position: absolute;
+  bottom: 0;
+  width: 1px;
+  height: 4px;
+  margin-left: -0.5px;
+  background: var(--color-line-2);
+}
+.gauge-tick--major {
+  height: 8px;
+  background: var(--color-text-3);
+}
+.gauge-tick--mid {
+  bottom: 1px;
+  width: 4px;
+  height: 4px;
+  margin-left: -2px;
+  background: var(--color-text-3);
+  transform: rotate(45deg);
+}
+
+/* Clean white knob — 28px face inside a 44px transparent hit-target. */
+.gauge-knob {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 44px;
+  height: 44px;
+  margin: -22px 0 0 -22px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: grab;
+  touch-action: none;
+  z-index: 3;
+}
+.gauge-knob:focus-visible { outline: none; }
+.gauge-knob__face {
+  position: relative;
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  background: #ffffff;
+  box-shadow: 0 0 0 1px var(--color-line-2), 0 2px 6px rgba(22, 21, 15, 0.16);
+  transition: transform 200ms var(--ease-out-quart), box-shadow 200ms var(--ease-out-quart);
+}
+.gauge-knob__face::before {
+  content: none;
+}
+/* Center locating pin — a small accent dot (the one place the knob speaks). */
+.gauge-knob__face::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--color-accent);
+  transform: translate(-50%, -50%);
+}
+.gauge-knob:focus-visible .gauge-knob__face {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
+}
+.gauge-rail.is-dragging .gauge-knob { cursor: grabbing; }
+.gauge-rail.is-dragging .gauge-knob__face {
+  transform: scale(1.08);
+  box-shadow: 0 0 0 1px var(--color-line-2), 0 0 0 6px rgba(193, 80, 47, 0.14), 0 2px 6px rgba(22, 21, 15, 0.16);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .gauge-knob.is-idle .gauge-knob__face {
+    animation: knob-idle 900ms var(--ease-out-quart) 2;
+  }
+}
+@keyframes knob-idle {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.06); }
+}
+
+/* Two-pole labels — active pole = full near-black text + accent letter +
+   accent underline; inactive dims to text-3. */
+.pole-label,
+.tumbler-cell,
+.axis-letter {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+.pole-label {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.4rem;
+  font-size: 0.8125rem;
+  line-height: 1.4;
+  /* Inactive pole stays readable (≥4.5:1 on near-white): the active/inactive
+     signal lives in the active side's near-black + accent letter + underline,
+     never in pushing the resting label below legibility. */
+  color: var(--color-text-2);
+  transition: color 180ms ease;
+}
+.pole-label__letter {
+  position: relative;
+  font-family: var(--font-type);
+  color: var(--color-text-2);
+  transition: color 180ms ease;
+}
+/* Active pole = near-black letter + near-black underline. The ONE accent on the
+   instrument screen is reserved for the value itself (fill + knob dot); the
+   active-pole readout speaks in weight/tone, not a second red (critic: accent
+   bloom on the instrument). */
+.pole-label.is-active { color: var(--color-text); }
+.pole-label.is-active .pole-label__letter { color: var(--color-text); }
+.pole-label.is-active .pole-label__letter::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -3px;
+  height: 2px;
+  background: var(--color-text);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .pole-label.is-active .pole-label__letter {
+    animation: pole-pulse 120ms var(--ease-out-quart);
+  }
+}
+@keyframes pole-pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.15); }
+  100% { transform: scale(1); }
+}
+
+/* Preview cluster + tumbler wells — light recesses. */
+.gauge-preview {
+  position: relative;
+  border-radius: 0.75rem;
+  border: 1px solid var(--color-line);
+  background: var(--color-surface);
+}
+.tumbler-cell {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 64px;
+  border-radius: 0.5rem;
+  border: 1px solid var(--color-line);
+  background: var(--color-surface-2);
+  box-shadow: inset 0 1px 3px rgba(22, 21, 15, 0.06);
+  perspective: 400px;
+  overflow: hidden;
+}
+.tumbler-cell__letter {
+  font-family: var(--font-type);
+  font-size: 2.125rem;
+  line-height: 1;
+  color: var(--color-text);
+  transform-origin: center;
+  backface-visibility: hidden;
+}
+@media (max-width: 1023px) {
+  .tumbler-cell { width: 48px; height: 56px; }
+  .tumbler-cell__letter { font-size: 1.75rem; }
+}
+
+.preview-portrait { opacity: 1; }
+@media (prefers-reduced-motion: no-preference) {
+  .preview-portrait {
+    animation: preview-fade 340ms var(--ease-out-expo) both;
+  }
+}
+@keyframes preview-fade {
+  from { opacity: 0; transform: scale(1.03); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+/* ============================================================================
+   Type modal — axis-tendency mini rail (static diagram, echoes the instrument).
+   ========================================================================== */
+.axis-mini {
+  position: relative;
+  width: 72px;
+  height: 1px;
+  flex: none;
+}
+.axis-mini__half {
+  position: absolute;
+  top: -0.5px;
+  height: 2px;
+  width: 50%;
+  border-radius: 2px;
+  background: var(--color-line-2);
+}
+.axis-mini__half.is-left { left: 0; }
+.axis-mini__half.is-right { right: 0; }
+.pole-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  white-space: nowrap;
+  color: var(--color-text-2);
+}
+/* Active pole in the modal reads by weight/tone — the accent diamond (菱点, on
+   the delete-list) is gone; accent stays only on the modal's one CTA. */
+.pole-tag.is-active { color: var(--color-text); font-weight: 600; }
+.pole-tag.is-active::before { content: none; }
+.sheet-handle {
+  width: 36px;
+  height: 4px;
+  border-radius: 999px;
+  background: var(--color-line-2);
+}
+
+/* Pairing chip — real control switching the modal to that type. */
+.modal-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-height: 44px;
+  padding: 8px 14px;
+  border-radius: 0.75rem;
+  border: 1px solid var(--color-line);
+  background: var(--color-surface);
+  cursor: pointer;
+  transition:
+    transform 300ms var(--ease-out-expo),
+    border-color 300ms var(--ease-out-expo),
+    background-color 300ms var(--ease-out-expo);
+}
+@media (hover: hover) {
+  .modal-chip:hover {
+    border-color: var(--color-line-2);
+    background: var(--color-surface-2);
+    transform: translateY(-1px);
+  }
+}
+.modal-chip:active { transform: scale(0.97); }
+
+/* ============================================================================
+   Reveal-on-scroll (guaranteed visible; motion is pure enhancement).
+   ========================================================================== */
+/* Container-level reveal (whole-section opacity+translate) is desktop-only:
+   on iOS it promoted every section during scroll. Mobile containers are always
+   visible; only .reveal-item children animate (see mobile override below). */
+@media (min-width: 1024px) {
+  html.js .reveal {
+    transition:
+      opacity 900ms var(--ease-out-expo),
+      transform 900ms var(--ease-out-expo),
+      filter 900ms var(--ease-out-expo);
+    transition-delay: var(--reveal-delay, 0ms);
+    will-change: opacity, transform, filter;
+  }
+  html.js .reveal:not(.reveal-in):not(.reveal-shown) {
+    opacity: 0;
+    transform: translateY(56px) scale(0.985);
+    filter: blur(12px);
+  }
+}
+.reveal-in {
+  opacity: 1;
+  transform: none;
+  filter: none;
+}
+.reveal-shown {
+  opacity: 1 !important;
+  transform: none !important;
+  filter: none !important;
+  transition: none !important;
+}
+html.js .reveal-item {
+  transition:
+    opacity 920ms var(--ease-out-expo),
+    transform 920ms var(--ease-out-expo),
+    filter 920ms var(--ease-out-expo);
+  transition-delay: var(--reveal-delay, 0ms);
+  will-change: opacity, transform, filter;
+}
+html.js .reveal:not(.reveal-in):not(.reveal-shown) .reveal-item {
+  opacity: 0;
+  transform: translateY(42px) scale(0.97);
+  filter: blur(10px);
+}
+/* Mobile: items fade only — no per-item translate, so the reveal costs one
+   compositing layer instead of 10+. hero-stagger children are excluded: their
+   cjk-rise keyframes (below) are a separate, kept-as-is system. */
+@media (max-width: 1023.98px) {
+  html.js .reveal-item:not(.hero-stagger *) {
+    transition: opacity 480ms var(--ease-out-expo);
+    transition-delay: var(--reveal-delay, 0ms);
+    transform: none !important;
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  html.js .hero-stagger .reveal-item {
+    opacity: 0;
+    animation: cjk-rise 820ms var(--ease-out-expo) both;
+    animation-delay: var(--reveal-delay, 0ms);
+  }
+}
+@keyframes cjk-rise {
+  from { opacity: 0; transform: translateY(26px); }
+  to { opacity: 1; transform: none; }
+}
+
+/* Hero spectrum-rail entrance — scaleX grow. */
+@media (prefers-reduced-motion: no-preference) {
+  html.js .hero-stagger .hero-rail {
+    transform-origin: center;
+    animation: hero-rail-in 620ms var(--ease-out-expo) both;
+    animation-delay: var(--reveal-delay, 0ms);
+  }
+}
+@keyframes hero-rail-in {
+  from { transform: scaleX(0); opacity: 0; }
+  to { transform: scaleX(1); opacity: 1; }
+}
+
+/* Hero scroll-cue falling dot. */
+@media (prefers-reduced-motion: no-preference) {
+  .hero-scrollcue__dot {
+    animation: hero-fall 1600ms var(--ease-in-out-quart) infinite;
+  }
+  .hero-scrollcue:hover .hero-scrollcue__dot {
+    animation-duration: 800ms;
+  }
+}
+@keyframes hero-fall {
+  0% { transform: translateY(0); opacity: 1; }
+  70% { opacity: 0; }
+  100% { transform: translateY(28px); opacity: 0; }
+}
+
+/* Brand slogan — per-line masked rise. */
+.brand-mask {
+  overflow: hidden;
+  padding-block: 0.14em;
+  margin-block: -0.14em;
+}
+@media (prefers-reduced-motion: no-preference) {
+  html.js #brand.reveal-in .brand-line {
+    animation: brand-line 720ms var(--ease-out-expo) both;
+    animation-delay: var(--reveal-delay, 0ms);
+  }
+}
+@keyframes brand-line {
+  from { transform: translateY(130%); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+/* ============================================================================
+   Reduced-motion: full respect.
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+  .reveal,
+  .reveal-item,
+  .brand-line {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+    animation: none !important;
+  }
+  .pole-label__letter,
+  .tumbler-cell__letter {
+    animation: none !important;
+  }
+  .gauge-knob__face {
+    transition: none !important;
+  }
+  .type-card__img {
+    transition: none !important;
+  }
+  .type-card:focus-visible .type-card__img {
+    transform: none !important;
+  }
+  @media (hover: hover) {
+    .type-card:hover .type-card__img {
+      transform: none !important;
+    }
+  }
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* ============================================================================
+   Mobile "spaces" (space-flip paging) + figure life + cue chevrons.
+   iPhone Safari first. Desktop (≥1024) keeps the editorial long scroll.
+   ========================================================================== */
+@media (prefers-reduced-motion: no-preference) {
+  .hero-idle {
+    animation: hero-idle 5200ms ease-in-out infinite;
+  }
+}
+@keyframes hero-idle {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-7px); }
+}
+
+.cue-chevron {
+  position: absolute;
+  left: 50%;
+  width: 14px;
+  height: 8px;
+  margin-left: -7px;
+  opacity: 0.6;
+}
+.cue-chevron::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-left: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: rotate(-45deg) scale(0.82);
+  border-radius: 1px;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .cue-chevron {
+    animation: cue-fall 1700ms cubic-bezier(0.45, 0, 0.25, 1) infinite;
+  }
+}
+@keyframes cue-fall {
+  0% { opacity: 0; transform: translateY(-3px); }
+  30% { opacity: 0.75; }
+  65% { opacity: 0; transform: translateY(7px); }
+  100% { opacity: 0; transform: translateY(7px); }
+}
+/* Offstage pause contract: Hero.jsx sets [data-offstage] on #hero when the
+   section leaves the viewport — infinite loops must not burn frames offscreen. */
+#hero[data-offstage] .hero-idle,
+#hero[data-offstage] .cue-chevron {
+  animation-play-state: paused;
+}
+.space-cue {
+  position: absolute;
+  bottom: 2px;
+  left: 50%;
+  width: 44px;
+  height: 44px;
+  margin-left: -22px;
+  color: var(--color-text-3);
+  z-index: 10;
+}
+
+.tumbler-cell--mini { width: 36px; height: 42px; border-radius: 0.5rem; }
+.tumbler-cell--mini .tumbler-cell__letter { font-size: 1.05rem; }
+
+@media (max-width: 1023.98px) {
+  /* Scroll-snap retired (app-tab architecture): the root snap was the source of
+     「定不住 / 特别死 / 律动乱」. Each tab view is a plain smooth-scrolling column
+     now. The #hero/#gallery/#instrument/#brand/.snap-space rules below no longer
+     match any element (those sections are gone) — left as dead CSS, pruned later. */
+  html {
+    scroll-snap-type: none;
+    scroll-padding-top: 0;
+  }
+  .snap-space {
+    height: auto;
+    min-height: 100svh;
+    scroll-snap-align: start;
+    overflow-x: clip;
+  }
+  html[data-snap-off] { scroll-snap-type: none; }
+  /* Closing space (brand + app + footer) — one continuous light chamber. */
+  .closing-space {
+    position: relative;
+    isolation: isolate;
+    color: var(--color-text);
+    background: var(--color-bg);
+  }
+  .closing-space .surface-espresso,
+  .closing-space .surface-espresso--deep { background: none; }
+  .closing-space .surface-espresso::before,
+  .closing-space .surface-espresso::after,
+  .closing-space .seat-bottom,
+  .closing-space .rule-double { display: none; }
+
+  .gauge-panel { padding: 14px; }
+
+  /* Mobile sheet: the 60px-blur overlay shadow mostly paints offscreen and
+     drags the open-frame — converge to a tight two-layer lift. Desktop keeps
+     var(--shadow-overlay). */
+  .modal-panel {
+    box-shadow:
+      0 1px 2px rgba(22, 21, 15, 0.06),
+      0 10px 24px rgba(22, 21, 15, 0.12);
+  }
+
+  /* Mobile hero (primary surface): the two specimens ARE the hero moment. The
+     desktop `w-50%` figures are width-driven and read small on the narrow
+     canvas — here they're height-driven so they fill the stage at real size,
+     slightly overlapping like the desktop composition. The short-viewport
+     override below (toolbar-shrunk / SE) re-tightens them. */
+  #hero .hero-fig-las img,
+  #hero .hero-fig-cas img {
+    width: auto;
+    height: min(35svh, 300px);
+    max-width: none;
+  }
+  #hero .hero-fig-las { left: -4%; bottom: 15%; width: auto; }
+  #hero .hero-fig-cas { left: 40%; bottom: 15%; width: auto; }
+  /* Plate hugs the figures on the taller mobile stage (less empty floor). */
+  #hero .hero-cabinet { top: 34%; bottom: 8%; }
+
+  @media (max-height: 700px) and (orientation: portrait) {
+    #hero {
+      padding-top: 5.25rem;
+      padding-bottom: 1.5rem;
+    }
+    #hero .hero-grid { gap: 1rem; }
+    #hero .hero-art {
+      /* Beat the tall-screen utilities: flex-1 (basis 0) would ignore height,
+         and min-h-[40svh] floored the stage at ~265px on the 664 layout
+         viewport — both must yield here or the figures fall below the fold. */
+      flex: none;
+      min-height: 0;
+      height: 22svh;
+      max-height: 200px;
+    }
+    #hero .hero-fig-las img,
+    #hero .hero-fig-cas img {
+      width: auto;
+      max-width: none;
+    }
+    #hero .hero-fig-las img { height: min(19svh, 128px); }
+    #hero .hero-fig-cas img { height: min(19svh, 128px); }
+    #hero .hero-fig-las { left: 10%; width: auto; }
+    #hero .hero-fig-cas { left: 46%; width: auto; }
+    #hero .hero-rail-q { display: none; }
+    #hero .hero-scrollcue { bottom: 0.375rem; }
+    #gallery {
+      padding-top: 4.5rem;
+      padding-bottom: 1rem;
+    }
+    #gallery > .grid { margin-top: 0.5rem; }
+    #gallery .family-head { padding-block: 0.25rem; }
+    #gallery .teach-wrap { padding-block: 0.25rem; }
+    #gallery .teach-band {
+      padding-top: 0.5rem;
+      padding-bottom: 0.5rem;
+      gap: 0.375rem;
+    }
+    #gallery .teach-note { display: none; }
+    #instrument {
+      padding-top: 4.5rem;
+      padding-bottom: 0.25rem;
+    }
+    #instrument .gauge-panel { padding: 8px; }
+    #instrument .gauge-panel > .seam { display: none; }
+    #instrument .gauge-panel hr.rule-brass--capped { margin-top: 0.375rem; }
+    #instrument .inst-grid p.text-gold { margin-top: 0.375rem; }
+    #instrument .inst-grid { gap: 0.5rem; }
+    #instrument .gauge-rail { margin-top: 0.25rem; }
+    #instrument .rail-stack { margin-top: 0.375rem; }
+    #instrument .rail-stack > :not(:last-child) { margin-bottom: 0.375rem; }
+    #brand { padding-top: 4.5rem; padding-bottom: 0.25rem; }
+    #brand .brand-p3 { display: none; }
+    #brand .brand-copy { margin-top: 0.5rem; }
+    #brand .brand-copy > * + * { margin-top: 0.375rem; }
+    #brand .brand-slogan { margin-top: 0.5rem; }
+    #app { padding-top: 0.25rem; padding-bottom: 0.375rem; }
+    #app .glass { padding-top: 0.75rem; padding-bottom: 0.75rem; }
+    footer .max-w-6xl { padding-block: 0.5rem; }
+    footer .rule-brass { margin-block: 0.375rem; }
+  }
+
+  @media (orientation: landscape) and (max-height: 500px) {
+    html {
+      scroll-snap-type: none;
+    }
+    .snap-space {
+      height: auto;
+      min-height: 100svh;
+    }
+    #hero {
+      overflow: visible;
+      padding-bottom: 3rem;
+    }
+    .hero-scrollcue {
+      position: static;
+      margin-top: 2.5rem;
+    }
+    .space-cue { display: none; }
+  }
+}
+
+/* ============================================================================
+   App-tab architecture (2026-07-14) — bottom nav on mobile, slim top bar on
+   desktop; each tab is a smooth-scrolling column; type detail is a full page.
+   Consistent scale: one serif display (.font-cjk-display), one sans body, one
+   accent (brick-red). No snap, no decoration.
+   ========================================================================== */
+.app-shell { position: relative; min-height: 100svh; overflow-x: clip; }
+
+/* Tab content enters in visible beats. Transforms are paint-only, so the
+   stagger does not change document geometry or interfere with scroll restore. */
+@media (prefers-reduced-motion: no-preference) {
+  .tab-view:not(.next-detail) > * {
+    animation: module-enter 560ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  .tab-view:not(.next-detail) > :nth-child(1) { animation-delay: 40ms; }
+  .tab-view:not(.next-detail) > :nth-child(2) { animation-delay: 160ms; }
+  .tab-view:not(.next-detail) > :nth-child(3) { animation-delay: 280ms; }
+  .tab-view:not(.next-detail) > :nth-child(4) { animation-delay: 400ms; }
+  .tab-view:not(.next-detail) > :nth-child(5) { animation-delay: 520ms; }
+}
+@keyframes module-enter {
+  from { opacity: 0; transform: translateY(22px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+/* Lock the page against horizontal drag/drift (user-caught: home slid left/right).
+   Only the character strip scrolls sideways — inside its own contained track. */
+html, body { overflow-x: hidden; }
+
+/* ---- Nav ---------------------------------------------------------------- */
+.app-nav {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 50;
+  background: color-mix(in oklab, var(--color-bg), transparent 4%);
+  border-top: 1px solid var(--color-line);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+.app-nav__inner {
+  max-width: 72rem;
+  margin: 0 auto;
+}
+.app-nav__brand { display: none; }
+.skylya-logo {
+  display: inline-flex;
+  align-items: baseline;
+  font-family: var(--font-logo);
+  font-weight: 800;
+  letter-spacing: 0;
+  line-height: 1;
+  white-space: nowrap;
+}
+.skylya-logo > span {
+  display: inline-block;
+  transform-origin: 50% 78%;
+  animation: skylya-letter-pop 720ms var(--ease-out-expo) both;
+  animation-delay: calc(var(--logo-i) * 58ms);
+  will-change: transform;
+}
+@media (hover: hover) {
+  .skylya-logo:hover > span,
+  .app-nav__brand:hover .skylya-logo > span,
+  .site-footer__logo:hover .skylya-logo > span,
+  .app-nav__brand:focus-visible .skylya-logo > span {
+    animation: skylya-letter-hover-pop 620ms var(--ease-out-expo) both;
+    animation-delay: calc(var(--logo-i) * 48ms);
+  }
+}
+@keyframes skylya-letter-pop {
+  0% { transform: translateY(.22em) scale(.9); }
+  48% { transform: translateY(-.15em) scale(1.08); }
+  72% { transform: translateY(.04em) scale(.98); }
+  100% { transform: translateY(0) scale(1); }
+}
+@keyframes skylya-letter-hover-pop {
+  0% { transform: translateY(0) scale(1); }
+  42% { transform: translateY(-.18em) scale(1.1); }
+  70% { transform: translateY(.04em) scale(.98); }
+  100% { transform: translateY(0) scale(1); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .skylya-logo > span {
+    animation: none !important;
+    transform: none !important;
+  }
+
+  .modal-panel {
+    animation: none !important;
+    transform: none !important;
+    filter: none !important;
+  }
+}
+.app-nav__tabs {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  align-items: end;
+}
+.app-nav__tab {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  padding: 8px 4px 7px;
+  min-height: 56px;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  color: var(--color-text-3);
+  transition: color 200ms var(--ease-luxe);
+  -webkit-tap-highlight-color: transparent;
+}
+.app-nav__tab.is-active { color: var(--color-text); }
+.app-nav__icon {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  transition: transform 170ms var(--ease-luxe), background 200ms var(--ease-luxe), box-shadow 200ms var(--ease-luxe);
+}
+/* Press feedback — quick down, sprung release (奢侈品手感: respond, don't shout). */
+.app-nav__tab:active .app-nav__icon { transform: scale(0.94); transition-duration: 90ms; }
+.app-nav__label { font-size: 0.6875rem; letter-spacing: 0.02em; }
+/* Active indicator — one quiet dot slides in under the current tab instead of
+   the icon snapping colors. */
+.app-nav__tab::after {
+  content: "";
+  position: absolute;
+  bottom: 3px;
+  left: 50%;
+  width: 4px;
+  height: 4px;
+  margin-left: -2px;
+  border-radius: 999px;
+  background: var(--color-text);
+  opacity: 0;
+  transform: scale(0.5);
+  transition: opacity 200ms var(--ease-luxe), transform 200ms var(--ease-luxe);
+}
+.app-nav__tab.is-active::after { opacity: 1; transform: scale(1); }
+/* Center primary action — 测试 keeps its accent disc (user-锁定 primary slot),
+   but restrained: no resident shadow; it lifts only while active. */
+.app-nav__tab--primary { color: var(--color-text-3); }
+.app-nav__tab--primary .app-nav__icon {
+  width: 32px;
+  height: 32px;
+  margin-top: 0;
+  background: transparent;
+  color: currentColor;
+}
+.app-nav__tab--primary:active .app-nav__icon { transform: scale(0.94); transition-duration: 90ms; }
+.app-nav__tab--primary .app-nav__label,
+.app-nav__tab--primary.is-active .app-nav__label { color: currentColor; }
+
+/* ---- Tab view shell ----------------------------------------------------- */
+.tab-view {
+  max-width: 40rem;
+  margin: 0 auto;
+  padding: 1.75rem 1.25rem calc(84px + env(safe-area-inset-bottom, 0px));
+  overflow-x: clip;
+}
+.view-head { padding-top: 0.5rem; }
+.view-eyebrow {
+  font-size: 0.75rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-text-2);
+}
+.view-title {
+  margin-top: 0.6rem;
+  font-size: clamp(1.75rem, 1.2rem + 2.6vw, 2.5rem);
+  line-height: 1.16;
+  letter-spacing: -0.02em;
+  color: var(--color-text);
+}
+.view-intro {
+  margin-top: 0.85rem;
+  max-width: 34em;
+  font-size: 1rem;
+  line-height: 1.7;
+  color: var(--color-text-2);
+}
+.view-intro b { color: var(--color-text); font-weight: 600; }
+
+/* ---- Home --------------------------------------------------------------- */
+.home-cover { padding-top: 1.5rem; }
+.home-title {
+  margin-top: 0.7rem;
+  font-size: clamp(2rem, 1.2rem + 4.2vw, 3.25rem);
+  line-height: 1.14;
+  letter-spacing: -0.025em;
+  color: var(--color-text);
+}
+.home-sub {
+  margin-top: 1rem;
+  max-width: 30em;
+  font-size: 1.0625rem;
+  line-height: 1.65;
+  color: var(--color-text-2);
+}
+.home-cover__cta {
+  margin-top: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+.home-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-height: 44px;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  font-size: 0.9375rem;
+  color: var(--color-text-2);
+  transition: color 180ms ease;
+}
+.home-link:hover { color: var(--color-text); }
+.home-hero-art {
+  position: relative;
+  overflow: clip;
+  margin: 1.75rem 0 0;
+  height: 38svh;
+  max-height: 320px;
+}
+.home-hero-art__glow {
+  position: absolute;
+  inset: 20% 2% 6%;
+  border-radius: 1rem;
+  background: var(--color-surface-2);
+}
+.home-hero-art__fig {
+  position: absolute;
+  bottom: 6%;
+  height: min(30svh, 250px);
+  width: auto;
+  filter: drop-shadow(0 12px 18px rgba(22, 21, 15, 0.10));
+}
+.home-hero-art__fig--l { left: 0; z-index: 2; }
+.home-hero-art__fig--r { right: 0; z-index: 1; }
+
+.home-strip { margin-top: 2.75rem; }
+.home-strip__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.home-strip__title { font-size: 1.375rem; color: var(--color-text); }
+.home-strip__all {
+  background: none; border: 0; cursor: pointer;
+  font-size: 0.875rem; color: var(--color-text-2);
+}
+.home-strip__track {
+  margin: 1rem -1.25rem 0;
+  padding: 0.25rem 1.25rem 0.5rem;
+  display: flex;
+  gap: 0.75rem;
+  overflow-x: auto;
+  scroll-snap-type: x proximity;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.home-strip__track::-webkit-scrollbar { display: none; }
+.strip-card {
+  flex: 0 0 58%;
+  max-width: 15rem;
+  scroll-snap-align: start;
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  background: var(--color-surface);
+  border: 1px solid var(--color-line);
+  border-radius: 0.75rem;
+  overflow: hidden;
+  cursor: pointer;
+  transition: border-color 200ms ease, transform 200ms ease;
+}
+.strip-card:active { transform: scale(0.985); }
+.strip-card__media { background: var(--color-surface-2); aspect-ratio: 1; }
+.strip-card__img { width: 100%; height: 100%; object-fit: cover; }
+.strip-card__row {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.7rem 0.85rem 0.85rem;
+}
+.strip-card__code { display: block; font-size: 1.25rem; color: var(--color-text); }
+.strip-card__name { display: block; margin-top: 0.05rem; font-size: 0.9375rem; color: var(--color-text-2); }
+.strip-card__go { flex: none; font-size: 0.8125rem; color: var(--color-accent); padding-bottom: 0.15rem; }
+
+/* Home sections shared head */
+.home-section__head { margin-bottom: 1rem; }
+.home-section__title { font-size: 1.375rem; color: var(--color-text); }
+.home-section__sub { margin-top: 0.35rem; font-size: 0.9375rem; line-height: 1.55; color: var(--color-text-2); }
+.home-instrument { margin-top: 2.75rem; }
+.home-strip__hint { margin-top: 0.35rem; font-size: 0.8125rem; color: var(--color-text-3); }
+
+/* Test placeholder */
+.test-ph {
+  margin-top: 2rem;
+  padding: 2rem 1.5rem 2.25rem;
+  background: var(--color-surface);
+  border: 1px solid var(--color-line);
+  border-radius: 1rem;
+  text-align: center;
+}
+.test-ph__badge {
+  display: inline-block;
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  color: var(--color-accent);
+  background: color-mix(in oklab, var(--color-accent), transparent 90%);
+  padding: 0.3rem 0.7rem;
+  border-radius: 999px;
+}
+.test-ph__title { margin-top: 1rem; font-size: 1.625rem; color: var(--color-text); }
+.test-ph__copy { margin: 0.75rem auto 0; max-width: 26em; font-size: 1rem; line-height: 1.7; color: var(--color-text-2); }
+.test-ph .btn { margin-top: 1.5rem; }
+
+.home-app { margin-top: 2.75rem; }
+.home-app__inner {
+  background: var(--color-surface);
+  border: 1px solid var(--color-line);
+  border-radius: 1rem;
+  padding: 1.5rem 1.35rem 1.6rem;
+}
+.home-app__eyebrow { font-size: 0.75rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-text-2); }
+.home-app__title { margin-top: 0.5rem; font-size: 1.375rem; color: var(--color-text); }
+.home-app__copy { margin-top: 0.6rem; font-size: 0.9375rem; line-height: 1.65; color: var(--color-text-2); }
+.home-app .btn { margin-top: 1.1rem; }
+
+/* ---- Types -------------------------------------------------------------- */
+.types-group { margin-top: 2.25rem; }
+.types-group__head {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+  padding-bottom: 0.9rem;
+  border-bottom: 1px solid var(--color-line);
+}
+.types-group__letter { font-size: 1.5rem; color: var(--color-text); }
+.types-group__name { font-size: 1.375rem; color: var(--color-text); }
+.types-group__en { font-size: 0.8125rem; color: var(--color-text-3); }
+.types-grid {
+  margin-top: 1.1rem;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.85rem;
+}
+/* No card frame (user: 「不要卡片,太刺了」) — the character sits directly in the
+   page, grounded only by a soft radial wash. */
+.type-big {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  transition: transform 220ms ease;
+}
+.type-big:active { transform: scale(0.98); }
+@media (hover: hover) {
+  .type-big:hover .type-big__img { transform: scale(1.03); }
+}
+.type-big__media {
+  position: relative;
+  aspect-ratio: 1;
+  background: radial-gradient(58% 48% at 50% 82%, var(--color-surface-2), transparent 72%);
+}
+.type-big__img { width: 100%; height: 100%; object-fit: contain; transition: transform 320ms var(--ease-out-expo); }
+.type-big__num {
+  position: absolute; top: 0.25rem; left: 0.2rem;
+  font-size: 0.8125rem; color: var(--color-text-3);
+}
+.type-big__body { padding: 0.25rem 0.35rem 0.95rem; }
+.type-big__code { display: block; font-size: 1.5rem; line-height: 1.1; color: var(--color-text); }
+.type-big__name { display: block; margin-top: 0.15rem; font-size: 1rem; color: var(--color-text); }
+.type-big__traits { display: block; margin-top: 0.25rem; font-size: 0.8125rem; line-height: 1.5; color: var(--color-text-2); }
+
+/* ---- Type detail (full-page OVERLAY) ------------------------------------
+   Fixed above the still-mounted list, scrolling in its own container: the
+   body's position physically survives open/close (no restore, no flash).
+   overscroll-behavior:contain stops edge-flings from chaining to the list. */
+.detail-view {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  background: var(--color-bg);
+  max-width: none;
+  padding-top: 0;
+  /* Center the 40rem column via padding (not child margins) so the sticky
+     back button and the full-bleed stage keep their own layout. */
+  padding-inline: max(1.25rem, calc((100% - 40rem) / 2));
+}
+.detail-back {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  margin: 0.5rem 0 0 -0.35rem;
+  padding: 0.5rem 0.6rem;
+  min-height: 44px;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  font-size: 0.9375rem;
+  color: var(--color-text-2);
+}
+.detail-back:hover { color: var(--color-text); }
+.detail-stage {
+  position: relative;
+  height: 46svh;
+  max-height: 380px;
+  margin: 0 -1.25rem;
+  display: grid;
+  place-items: end center;
+}
+.detail-stage__glow {
+  position: absolute;
+  inset: 12% 8% 0;
+  background: radial-gradient(60% 55% at 50% 82%, var(--color-surface-2), transparent 72%);
+}
+.detail-figure {
+  position: relative;
+  height: min(42svh, 360px);
+  width: auto;
+  filter: drop-shadow(0 16px 24px rgba(22, 21, 15, 0.12));
+}
+.detail-body { padding-top: 0.5rem; }
+.detail-eyebrow { font-size: 0.75rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--color-text-2); }
+.detail-code { margin-top: 0.4rem; font-size: 2.5rem; line-height: 1; color: var(--color-text); }
+.detail-name { margin-top: 0.35rem; font-size: 1.75rem; color: var(--color-text); }
+.detail-traits { margin-top: 0.5rem; font-size: 0.9375rem; color: var(--color-text-2); }
+
+.detail-decode {
+  margin-top: 1.5rem;
+  border: 1px solid var(--color-line);
+  border-radius: 0.85rem;
+  overflow: hidden;
+}
+.decode-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.9rem;
+  padding: 1rem 1.05rem;
+}
+.decode-row + .decode-row { border-top: 1px solid var(--color-line); }
+.decode-letter {
+  flex: none;
+  width: 2.6rem;
+  height: 2.6rem;
+  display: grid;
+  place-items: center;
+  border-radius: 0.7rem;
+  background: var(--color-surface-2);
+  font-size: 1.5rem;
+  color: var(--color-accent);
+}
+.decode-text { display: flex; flex-direction: column; gap: 0.15rem; padding-top: 0.05rem; }
+/* The English word is the headline — a glance tells you what L / A / S mean. */
+.decode-word { font-size: 1.375rem; line-height: 1.1; font-weight: 600; color: var(--color-text); }
+.decode-sub { font-size: 0.8125rem; color: var(--color-text-2); }
+.decode-gloss { margin-top: 0.15rem; font-size: 0.9375rem; line-height: 1.55; color: var(--color-text-2); }
+
+.detail-section { margin-top: 1.75rem; }
+.detail-h2 { font-size: 0.75rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-text-2); }
+.detail-desc { font-size: 1.0625rem; line-height: 1.8; color: var(--color-text); }
+.detail-section .detail-h2 + * { margin-top: 0.75rem; }
+.detail-list { list-style: none; padding: 0; margin: 0; }
+.detail-list li {
+  position: relative;
+  padding-left: 1.1rem;
+  margin-top: 0.6rem;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--color-text);
+}
+.detail-list li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.6em;
+  width: 5px;
+  height: 5px;
+  border-radius: 999px;
+  background: var(--color-line-2);
+}
+.detail-chips { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.75rem; }
+.detail-cta { margin-top: 2rem; }
+.detail-cta .btn { width: 100%; }
+
+/* ---- App tab ------------------------------------------------------------ */
+.app-lede { margin-top: 1.5rem; display: flex; flex-direction: column; gap: 1rem; }
+.app-lede p { font-size: 1.0625rem; line-height: 1.75; color: var(--color-text); }
+.app-lede b { font-weight: 600; }
+.app-points { margin-top: 2rem; display: flex; flex-direction: column; }
+.app-point {
+  display: flex;
+  gap: 1rem;
+  padding: 1.1rem 0;
+  border-top: 1px solid var(--color-line);
+}
+.app-point:last-child { border-bottom: 1px solid var(--color-line); }
+.app-point__k { flex: none; font-size: 0.9375rem; color: var(--color-text-3); padding-top: 0.15rem; }
+.app-point__t { font-size: 1.0625rem; color: var(--color-text); }
+.app-point__d { margin-top: 0.25rem; font-size: 0.9375rem; line-height: 1.6; color: var(--color-text-2); }
+.app-ensemble {
+  margin: 2rem 0 0;
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 0.4rem;
+}
+.app-ensemble__cell { background: var(--color-surface-2); border-radius: 0.5rem; overflow: hidden; aspect-ratio: 1; }
+.app-ensemble__cell img { width: 100%; height: 100%; object-fit: cover; }
+.app-cta { margin-top: 2rem; text-align: center; }
+.app-cta .btn { width: 100%; }
+.app-cta__note { margin-top: 0.6rem; font-size: 0.8125rem; color: var(--color-text-3); }
+
+/* ---- Desktop: slim top bar, wider content ------------------------------- */
+@media (min-width: 1024px) {
+  .app-nav {
+    top: 0;
+    bottom: auto;
+    border-top: 0;
+    border-bottom: 1px solid var(--color-line);
+    padding-bottom: 0;
+  }
+  .app-nav__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+    min-height: 60px;
+  }
+  .app-nav__brand {
+    display: inline-flex;
+    align-items: center;
+    font-family: var(--font-logo);
+    font-size: 1.55rem;
+    font-weight: 800;
+    letter-spacing: 0;
+    line-height: 1;
+    color: var(--color-text);
+    text-decoration: none;
+  }
+  .app-nav__tabs { display: flex; grid-template-columns: none; gap: 0.5rem; align-items: center; }
+  .app-nav__tab { flex-direction: row; gap: 0.45rem; min-height: 40px; padding: 0.5rem 0.9rem; border-radius: 0.6rem; }
+  .app-nav__label { font-size: 0.9rem; }
+  .app-nav__icon { width: 30px; height: 30px; }
+  .app-nav__tab--primary { color: var(--color-text-3); background: transparent; }
+  .app-nav__tab--primary .app-nav__icon { width: 30px; height: 30px; margin: 0; border-radius: 999px; background: none; box-shadow: none; color: currentColor; }
+  .app-nav__tab--primary .app-nav__label,
+  .app-nav__tab--primary.is-active .app-nav__label { color: currentColor; }
+  .tab-view { max-width: 60rem; padding: 5.5rem 2rem 4rem; }
+  .types-grid { grid-template-columns: repeat(4, 1fr); }
+  .detail-stage { margin: 0; }
+}
