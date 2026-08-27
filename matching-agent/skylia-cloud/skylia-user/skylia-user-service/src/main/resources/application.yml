@@ -1,0 +1,104 @@
+server:
+  port: 8082
+
+spring:
+  application:
+    name: skylia-user
+
+  config:
+    import: optional:nacos:${spring.application.name}.yaml
+
+  cloud:
+    nacos:
+      discovery:
+        enabled: true
+        server-addr: ${NACOS_SERVER:localhost:8848}
+        namespace: ${NACOS_NAMESPACE:}
+      config:
+        enabled: true
+        server-addr: ${NACOS_SERVER:localhost:8848}
+        namespace: ${NACOS_NAMESPACE:}
+        file-extension: yaml
+    sentinel:
+      transport:
+        dashboard: ${SENTINEL_DASHBOARD:localhost:8858}
+    openfeign:
+      okhttp:
+        enabled: true
+      httpclient:
+        hc5:
+          enabled: false
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3306}/${MYSQL_DB:skylia_user}?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+    username: ${MYSQL_USER:root}
+    password: ${MYSQL_PASSWORD:123456}
+    type: com.alibaba.druid.pool.DruidDataSource
+    druid:
+      initial-size: 5
+      min-idle: 5
+      max-active: 20
+      max-wait: 60000
+      time-between-eviction-runs-millis: 60000
+      min-evictable-idle-time-millis: 300000
+      validation-query: SELECT 1
+      test-while-idle: true
+      test-on-borrow: false
+      test-on-return: false
+
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      database: 0
+
+mybatis-plus:
+  mapper-locations: classpath*:mapper/**/*.xml
+  type-aliases-package: com.skylia.user.domain.entity
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl
+  global-config:
+    db-config:
+      id-type: assign_id
+      logic-delete-field: deletedAt
+      logic-delete-value: "now()"
+      logic-not-delete-value: "null"
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+  api-docs:
+    path: /v3/api-docs
+
+knife4j:
+  enable: true
+  setting:
+    language: zh_cn
+
+logging:
+  level:
+    com.skylia: INFO
+    com.skylia.user.mapper: WARN
+    org.mybatis: WARN
+    com.baomidou.mybatisplus: WARN
+    java.sql: WARN
+
+skylia:
+  invite:
+    valid-days: ${SKYLIA_INVITE_VALID_DAYS:30}
+
+  beta:
+    max-users: 150
+
+  admin:
+    jwt:
+      secret: ${ADMIN_JWT_SECRET:skylia-admin-jwt-secret-key-must-be-at-least-256-bits-long}
+      expiration-ms: ${ADMIN_JWT_EXPIRATION_MS:${ADMIN_JWT_EXPIRE:7200000}}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info

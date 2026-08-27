@@ -1,0 +1,171 @@
+﻿# server 模式 - 容器网络内路由 + Nacos（与 deploy compose 一致）
+server:
+  port: 18080
+
+spring:
+  application:
+    name: skylia-gateway
+  main:
+    web-application-type: reactive
+  autoconfigure:
+    exclude:
+      - org.redisson.spring.starter.RedissonAutoConfigurationV2
+  cloud:
+    nacos:
+      discovery:
+        enabled: true
+        server-addr: ${NACOS_SERVER:nacos:8848}
+        namespace: ${NACOS_NAMESPACE:}
+      config:
+        enabled: true
+        server-addr: ${NACOS_SERVER:nacos:8848}
+        namespace: ${NACOS_NAMESPACE:}
+        file-extension: yaml
+    gateway:
+      routes:
+        - id: auth-service
+          uri: http://auth:8081
+          predicates:
+            - Path=/api/v1/auth/**
+          filters:
+            - StripPrefix=0
+        - id: account-service
+          uri: http://auth:8081
+          predicates:
+            - Path=/api/v1/account/**
+          filters:
+            - StripPrefix=0
+        - id: user-service
+          uri: http://user:8082
+          predicates:
+            - Path=/api/v1/users/**,/api/v1/internal/users/**
+          filters:
+            - StripPrefix=0
+        - id: profile-service
+          uri: http://profile:8083
+          predicates:
+            - Path=/api/v1/profiles/**,/api/v1/internal/profiles/**
+          filters:
+            - StripPrefix=0
+        - id: file-service
+          uri: http://file:8086
+          predicates:
+            - Path=/api/v1/files/**,/files/**
+          filters:
+            - StripPrefix=0
+        - id: match-service
+          uri: http://match:8085
+          predicates:
+            - Path=/api/v1/matches/**
+          filters:
+            - StripPrefix=0
+        - id: skylia-type-test-public
+          uri: http://match:8085
+          predicates:
+            - Path=/api/v1/public/skylia-type-test/**
+          filters:
+            - StripPrefix=0
+        - id: wechat-public
+          uri: http://match:8085
+          predicates:
+            - Path=/api/v1/public/wechat/**
+          filters:
+            - StripPrefix=0
+        - id: user-admin-registration-capacity
+          uri: http://user:8082
+          predicates:
+            - Path=/api/v1/admin/registration-capacity/**
+          filters:
+            - StripPrefix=0
+        - id: user-admin-feedback
+          uri: http://user:8082
+          predicates:
+            - Path=/api/v1/admin/user-feedback/**
+          filters:
+            - StripPrefix=0
+        - id: user-admin-sms-records
+          uri: http://user:8082
+          predicates:
+            - Path=/api/v1/admin/sms-records/**
+          filters:
+            - StripPrefix=0
+        - id: profile-admin
+          uri: http://profile:8083
+          predicates:
+            - Path=/api/v1/admin/profiles/**
+          filters:
+            - StripPrefix=0
+        - id: admin-service
+          uri: http://match:8085
+          predicates:
+            - Path=/api/v1/admin/**
+          filters:
+            - StripPrefix=0
+        - id: match-evaluation
+          uri: http://match:8085
+          predicates:
+            - Path=/api/v1/internal/profile-evaluation/**
+          filters:
+            - StripPrefix=0
+        - id: chat-service
+          uri: http://chat:8084
+          predicates:
+            - Path=/api/v1/chat/**
+          filters:
+            - StripPrefix=0
+        - id: chat-ws
+          uri: http://chat:8084
+          predicates:
+            - Path=/ws/chat/**
+        - id: ai-service
+          uri: http://ai:8087
+          predicates:
+            - Path=/api/v1/ai/**
+          filters:
+            - StripPrefix=0
+
+  data:
+    redis:
+      host: ${REDIS_HOST:redis}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:}
+      database: 0
+
+skylia:
+  jwt:
+    secret: ${JWT_SECRET:skyliaSecretKey2024ForJwtTokenGeneration}
+  admin:
+    jwt:
+      secret: ${ADMIN_JWT_SECRET:skylia-admin-jwt-secret-key-must-be-at-least-256-bits-long}
+      expiration-ms: ${ADMIN_JWT_EXPIRATION_MS:${ADMIN_JWT_EXPIRE:7200000}}
+  runtime:
+    env: ${SKYLIA_RUNTIME_ENV:server}
+    release: ${SKYLIA_RUNTIME_RELEASE:unknown}
+  gateway:
+    cors:
+      allowed-origin-patterns: ${CORS_ALLOWED_ORIGIN_PATTERNS:https://skylya.com,https://www.skylya.com}
+    whitelist:
+      paths:
+        - /api/v1/auth/send-code
+        - /api/v1/auth/send-reg-code
+        - /api/v1/auth/login
+        - /api/v1/auth/register
+        - /api/v1/auth/refresh
+        - /api/v1/auth/phone/send-code
+        - /api/v1/auth/phone/send-reg-code
+        - /api/v1/auth/phone/login
+        - /api/v1/auth/phone/register
+        - /api/v1/auth/phone/wechat/send-code
+        - /api/v1/auth/phone/wechat/verify
+        - /api/v1/auth/invite-codes/simulate-payment
+        - /api/v1/admin/auth/login
+        - /api/v1/public/skylia-type-test/**
+        - /api/v1/public/wechat/**
+        - /api/v1/profiles/face-verification/mini/**
+        - /files/**
+
+logging:
+  level:
+    root: INFO
+    com.skylia: INFO
+

@@ -1,0 +1,112 @@
+﻿server:
+  port: 8081
+
+spring:
+  application:
+    name: skylia-auth
+
+  config:
+    import: optional:nacos:${spring.application.name}.yaml
+  
+  cloud:
+    nacos:
+      discovery:
+        server-addr: ${NACOS_SERVER:localhost:8848}
+        namespace: ${NACOS_NAMESPACE:}
+      config:
+        server-addr: ${NACOS_SERVER:localhost:8848}
+        namespace: ${NACOS_NAMESPACE:}
+        file-extension: yaml
+    
+    sentinel:
+      transport:
+        dashboard: ${SENTINEL_DASHBOARD:localhost:8858}
+  
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      database: 0
+
+skylia:
+  wechat:
+    mini-program:
+      app-id: ${WECHAT_MINI_PROGRAM_APP_ID:}
+      app-secret: ${WECHAT_MINI_PROGRAM_APP_SECRET:}
+      api-base-url: ${WECHAT_MINI_PROGRAM_API_BASE_URL:https://api.weixin.qq.com}
+      timeout-seconds: ${WECHAT_MINI_PROGRAM_TIMEOUT_SECONDS:8}
+      phone-ticket-minutes: ${WECHAT_PHONE_TICKET_MINUTES:10}
+  # 阿里云公共凭证（邮件 + 短信共用）
+  aliyun:
+    access-key-id: ${ALIYUN_ACCESS_KEY_ID:${ALIYUN_DM_ACCESS_KEY_ID:}}
+    access-key-secret: ${ALIYUN_ACCESS_KEY_SECRET:${ALIYUN_DM_ACCESS_KEY_SECRET:}}
+    region-id: ${ALIYUN_REGION_ID:${ALIYUN_DM_REGION_ID:cn-hangzhou}}
+
+  jwt:
+    secret: ${JWT_SECRET:skylia-jwt-secret-key-must-be-at-least-256-bits-long}
+    access-token-expiration: 7200000
+    refresh-token-expiration: 604800000
+  
+  email:
+    code-expire-minutes: 5
+    send-interval-seconds: 60
+    directmail:
+      account-name: ${ALIYUN_DM_ACCOUNT_NAME:noreply@skyliaai.com}
+      from-alias: ${ALIYUN_DM_FROM_ALIAS:Skylya}
+      template-name: ${ALIYUN_DM_TEMPLATE_NAME:login_code}
+
+  sms:
+    notification:
+      enabled: ${ALIYUN_SMS_NOTIFICATION_ENABLED:true}
+      sign-name: ${ALIYUN_SMS_NOTIFICATION_SIGN_NAME:北京斯凯利亚科技}
+      match-success-template-code: ${ALIYUN_SMS_MATCH_SUCCESS_TEMPLATE_CODE:SMS_509470198}
+      appointment-confirmed-template-code: ${ALIYUN_SMS_APPOINTMENT_CONFIRMED_TEMPLATE_CODE:SMS_509540185}
+      # 正式发布前必须配置阿里云审核通过的“匹配周期结束”模板；空值会进入 outbox 重试/死信。
+      match-cycle-timeout-template-code: ${ALIYUN_SMS_MATCH_CYCLE_TIMEOUT_TEMPLATE_CODE:}
+      registration-verification-template-code: ${ALIYUN_SMS_REGISTRATION_VERIFICATION_TEMPLATE_CODE:SMS_509495190}
+      # 模板正文建议：您的邀请码是：${code}。正式发送前须先在阿里云审核通过。
+      paid-invite-code-template-code: ${ALIYUN_SMS_PAID_INVITE_CODE_TEMPLATE_CODE:}
+    receipt:
+      # 送达回执功能已停用；短信后台改为追踪验证码是否使用及是否过期。
+      enabled: false
+      endpoint: ${ALIYUN_MNS_ENDPOINT:https://1943695596114318.mns.cn-hangzhou.aliyuncs.com}
+      wait-seconds: ${ALIYUN_SMS_RECEIPT_WAIT_SECONDS:10}
+      idle-sleep-millis: ${ALIYUN_SMS_RECEIPT_IDLE_SLEEP_MILLIS:3000}
+      error-sleep-millis: ${ALIYUN_SMS_RECEIPT_ERROR_SLEEP_MILLIS:10000}
+      max-unmatched-dequeue-count: ${ALIYUN_SMS_RECEIPT_MAX_UNMATCHED_DEQUEUE_COUNT:5}
+      sms-report:
+        enabled: ${ALIYUN_SMS_REPORT_ENABLED:false}
+        queue-name: ${ALIYUN_SMS_REPORT_QUEUE_NAME:}
+        message-type: ${ALIYUN_SMS_REPORT_MESSAGE_TYPE:SmsReport}
+      pnvs-report:
+        enabled: ${ALIYUN_PNVS_REPORT_ENABLED:false}
+        queue-name: ${ALIYUN_PNVS_REPORT_QUEUE_NAME:}
+        message-type: ${ALIYUN_PNVS_REPORT_MESSAGE_TYPE:DypnsSmsVerifyReport}
+
+  invite:
+    # 仅供当前官网“我已付款”原型；正式支付接入前生产环境必须保持 false。
+    purchase-simulation-enabled: ${SKYLIA_INVITE_PURCHASE_SIMULATION_ENABLED:false}
+
+
+# API 文档
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+  api-docs:
+    path: /v3/api-docs
+
+knife4j:
+  enable: true
+  setting:
+    language: zh_cn
+
+logging:
+  level:
+    com.skylia: INFO
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+

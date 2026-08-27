@@ -1,0 +1,93 @@
+﻿server:
+  port: 18080
+
+spring:
+  application:
+    name: skylia-gateway
+  main:
+    web-application-type: reactive
+
+  config:
+    import: optional:nacos:${spring.application.name}.yaml
+
+  cloud:
+    nacos:
+      discovery:
+        enabled: true
+        server-addr: ${NACOS_SERVER:localhost:8848}
+        namespace: ${NACOS_NAMESPACE:}
+      config:
+        enabled: true
+        server-addr: ${NACOS_SERVER:localhost:8848}
+        namespace: ${NACOS_NAMESPACE:}
+        file-extension: yaml
+
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      database: 0
+
+skylia:
+  jwt:
+    secret: ${JWT_SECRET:skylia-jwt-secret-key-must-be-at-least-256-bits-long}
+
+  admin:
+    jwt:
+      secret: ${ADMIN_JWT_SECRET:skylia-admin-jwt-secret-key-must-be-at-least-256-bits-long}
+      expiration-ms: ${ADMIN_JWT_EXPIRATION_MS:${ADMIN_JWT_EXPIRE:7200000}}
+
+  runtime:
+    env: ${SKYLIA_RUNTIME_ENV:dev}
+    release: ${SKYLIA_RUNTIME_RELEASE:dev}
+
+  gateway:
+    cors:
+      allowed-origin-patterns: ${CORS_ALLOWED_ORIGIN_PATTERNS:https://skylya.com,https://www.skylya.com,http://localhost:*,http://127.0.0.1:*}
+    whitelist:
+      paths:
+        - /api/v1/auth/send-code
+        - /api/v1/auth/send-reg-code
+        - /api/v1/auth/login
+        - /api/v1/auth/register
+        - /api/v1/auth/refresh
+        - /api/v1/auth/phone/send-code
+        - /api/v1/auth/phone/send-reg-code
+        - /api/v1/auth/phone/login
+        - /api/v1/auth/phone/register
+        - /api/v1/auth/phone/wechat/send-code
+        - /api/v1/auth/phone/wechat/verify
+        - /api/v1/auth/invite-codes/simulate-payment
+        - /api/v1/admin/auth/login
+        - /api/v1/public/skylia-type-test/**
+        - /api/v1/public/wechat/**
+        - /api/v1/profiles/face-verification/mini/**
+        - /files/**
+        - /doc.html
+        - /swagger-resources/**
+        - /v3/api-docs/**
+        - /webjars/**
+
+logging:
+  level:
+    com.skylia: INFO
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: never
+    heapdump:
+      enabled: false
+    env:
+      enabled: false
+    configprops:
+      enabled: false
+    loggers:
+      enabled: false
+    mappings:
+      enabled: false
+
